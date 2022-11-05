@@ -1,0 +1,235 @@
+//The DataBase
+
+CREATE DATABASE Thousand_Programmers;
+
+
+// Universities TABLE 
+
+CREATE TABLE Universities (
+    University_Id int IDENTITY(1,1),
+    UniversityName VARCHAR(50) NOT NULL,
+    Location VARCHAR(50),
+  CONSTRAINT University_Id PRIMARY KEY (University_Id)
+); 
+
+
+
+//Colleges TABLE 
+  
+CREATE TABLE Colleges (
+   College_Id int IDENTITY(1,1),
+   CollegeName VARCHAR(50) NOT NULL,
+  CONSTRAINT College_Id PRIMARY KEY (College_Id)
+); 
+
+
+
+//StudentStatus TABLE 
+
+CREATE TABLE StudentStatus (
+   StudentStatus_Id int IDENTITY(1,1),
+   TheStatus VARCHAR(50) NOT NULL,
+  CONSTRAINT StudentStatus_Id PRIMARY KEY (StudentStatus_Id)
+); 
+
+
+
+//Students TABLE 
+
+CREATE TABLE Students (
+  Student_Id int IDENTITY(1,1),
+  FirstName VARCHAR(50) NOT NULL,
+  lastName VARCHAR(50) NOT NULL,
+  BirthDate date ,
+  Phone VARCHAR(50) NOT NULL,
+  Email VARCHAR(50) NOT NULL UNIQUE,
+  University_Id int NOT NULL,
+  College_Id int NOT NULL,
+  StudentStatus_Id int NOT NULL,
+  
+  CONSTRAINT Student_Id PRIMARY KEY (Student_Id),
+  
+   CONSTRAINT fk_University_Id FOREIGN KEY (University_Id) REFERENCES Universities(University_Id),
+   CONSTRAINT fk_College_Id FOREIGN KEY (College_Id) REFERENCES Colleges(College_Id),
+   CONSTRAINT fk_StudentStatus_Id FOREIGN KEY (StudentStatus_Id) REFERENCES StudentStatus(StudentStatus_Id)
+); 
+
+
+
+//EntryTest TABLE 
+
+CREATE TABLE EntryTest (
+  EntryTest_Id int IDENTITY(1,1),
+  Student_Id int NOT NULL,
+  Degree float(20),
+  CONSTRAINT EntryTest_Id PRIMARY KEY (EntryTest_Id),
+  CONSTRAINT fk_Student_Id FOREIGN KEY (Student_Id) REFERENCES Students(Student_Id)
+); 
+
+
+
+//CandidateStudents TABLE 
+
+CREATE TABLE CandidateStudents (
+  CandidateStudents_Id int IDENTITY(1,1),
+  EntryTest_Id int NOT NULL,
+  
+  CONSTRAINT CandidateStudents_Id PRIMARY KEY (CandidateStudents_Id),
+  CONSTRAINT fk_EntryTest_Id FOREIGN KEY (EntryTest_Id) REFERENCES EntryTest(EntryTest_Id)
+); 
+
+
+//Coaches TABLE 
+
+CREATE TABLE Coaches (
+  Coach_Id int IDENTITY(1,1),
+  FirstName VARCHAR(50) NOT NULL,
+  lastName VARCHAR(50) NOT NULL,
+  BirthDate date ,
+  Phone VARCHAR(50) NOT NULL,
+  Email VARCHAR(50) NOT NULL UNIQUE,
+  Specialty VARCHAR(50)
+  
+  CONSTRAINT Coach_Id PRIMARY KEY (Coach_Id),
+  
+); 
+
+
+
+//Courses TABLE 
+
+CREATE TABLE Courses (
+  Course_Id int IDENTITY(1,1),
+  CourseName VARCHAR(50) NOT NULL,
+  Coach_Id int NOT NULL,
+  SessionsNumber int,
+  SeatsNumber int,
+  
+  
+  CONSTRAINT Course_Id PRIMARY KEY (Course_Id),
+  CONSTRAINT fk_Coach_Id FOREIGN KEY (Coach_Id) REFERENCES Coaches(Coach_Id)
+); 
+
+
+
+
+//CourseExams TABLE 
+
+CREATE TABLE CourseExams (
+  CourseExams_Id int IDENTITY(1,1),
+  Student_Id int NOT NULL,
+  Course_Id int NOT NULL,
+  Degree float(20),
+    
+  CONSTRAINT CourseExams_Id PRIMARY KEY (CourseExams_Id),
+  CONSTRAINT fk_Student_Id1 FOREIGN KEY (Student_Id) REFERENCES Students(Student_Id),
+  CONSTRAINT fk_Course_Id1 FOREIGN KEY (Course_Id) REFERENCES Courses(Course_Id)
+); 
+
+
+
+//StudentProjects TABLE 
+
+CREATE TABLE StudentProjects (
+  Project_Id int IDENTITY(1,1),
+  ProjectTitle VARCHAR(50) NOT NULL,
+  Student_Id int NOT NULL,
+  Course_Id int NOT NULL,
+  Degree float (20),
+  
+  
+  CONSTRAINT Project_Id PRIMARY KEY (Project_Id),
+  CONSTRAINT fk_Student_Id2 FOREIGN KEY (Student_Id) REFERENCES Students(Student_Id) on delete no action,
+  CONSTRAINT fk_Course_Id2 FOREIGN KEY (Course_Id) REFERENCES Courses(Course_Id) on delete no action
+); 
+
+
+
+
+//Evaluations TABLE 
+
+CREATE TABLE Evaluations (
+  Evaluation_Id int IDENTITY(1,1),
+  Student_Id int NOT NULL,
+  CourseExams_Id int NOT NULL,
+  Project_Id int NOT NULL,
+  FinalResult float (20),
+  
+  
+  CONSTRAINT Evaluation_Id PRIMARY KEY (Evaluation_Id),
+  CONSTRAINT fk_Student_Id3 FOREIGN KEY (Student_Id) REFERENCES Students(Student_Id) on delete no action,
+  CONSTRAINT fkCourseExams_Id3 FOREIGN KEY (CourseExams_Id) REFERENCES CourseExams(CourseExams_Id) on delete no action,
+  CONSTRAINT fkProject_Id3 FOREIGN KEY (Project_Id) REFERENCES StudentProjects(Project_Id) on delete no action
+); 
+
+
+//JobCandidates TABLE 
+
+CREATE TABLE JobCandidates (
+  JobCandidate_Id int IDENTITY(1,1),
+  Student_Id int NOT NULL,
+  Course_Id int NOT NULL,
+  CourseExams_Id int NOT NULL,
+   
+  
+  CONSTRAINT JobCandidate_Id PRIMARY KEY (JobCandidate_Id),
+  CONSTRAINT fk_Student_Id4 FOREIGN KEY (Student_Id) REFERENCES Students(Student_Id) on delete no action,
+  CONSTRAINT fkCourse_Id4 FOREIGN KEY (Course_Id) REFERENCES Courses(Course_Id) on delete no action,
+  CONSTRAINT fkCourseExams_Id   FOREIGN KEY (CourseExams_Id ) REFERENCES CourseExams(CourseExams_Id ) on delete no action
+  
+); 
+
+
+
+//Certificates TABLE 
+
+CREATE TABLE Certificates (
+  Certificate_Id int IDENTITY(1,1),
+  Student_Id int NOT NULL,
+  Course_Id int NOT NULL,
+  Evaluation_Id int NOT NULL,
+   
+  
+  CONSTRAINT Certificate_Id PRIMARY KEY (Certificate_Id),
+  CONSTRAINT fk_Student_Id5 FOREIGN KEY (Student_Id) REFERENCES Students(Student_Id) on delete no action,
+  CONSTRAINT fkCourse_Id5 FOREIGN KEY (Course_Id) REFERENCES Courses(Course_Id) on delete no action,
+  CONSTRAINT fkEvaluation_Id1 FOREIGN KEY (Evaluation_Id) REFERENCES Evaluations(Evaluation_Id) on delete no action
+  
+); 
+
+
+
+//Companies TABLE 
+
+CREATE TABLE Companies (
+  Company_Id int IDENTITY(1,1),
+  CompanyName nvarchar(50) NOT NULL,
+  Email nvarchar(50) NOT NULL Unique,
+  Phone nvarchar(50) NOT NULL,
+  Specialty nvarchar(50) NOT NULL,
+   
+  
+  CONSTRAINT Company_Id PRIMARY KEY (Company_Id),
+  
+); 
+
+
+
+//JobInterviews TABLE 
+
+CREATE TABLE JobInterviews (
+  JobInterview_Id int IDENTITY(1,1),
+  JobCandidate_Id int NOT NULL,
+  Company_Id int NOT NULL,
+  
+   
+  
+  CONSTRAINT JobInterview_Id PRIMARY KEY (JobInterview_Id),
+  CONSTRAINT fk_JobCandidate_Id FOREIGN KEY (JobCandidate_Id) REFERENCES JobCandidates(JobCandidate_Id) on delete no action,
+  CONSTRAINT fkCompany_Id FOREIGN KEY (Company_Id) REFERENCES Companies(Company_Id) on delete no action,
+  
+); 
+
+
+
+
